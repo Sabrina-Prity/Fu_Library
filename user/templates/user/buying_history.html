@@ -1,0 +1,43 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container py-4">
+    <h1 class="text-center my-4">Buying History</h1>
+
+    {% if buying_history %}
+    <div class="row">
+        {% for record in buying_history %}
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card shadow-sm">
+                {% if record.book.image %}
+                <img src="{{ record.book.image.url }}" class="card-img-top img-fluid" 
+                     alt="{{ record.book.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{% static 'images.jpeg' %}" class="card-img-top img-fluid"
+                     alt="Default image" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title font-weight-bold text-primary">{{ record.book.title }}</h5>
+                    <p class="card-text text-muted mb-2">Price: <span class="text-success">${{ record.book.price }}</span></p>
+                    <p class="card-text text-muted mb-2">Category: {{ record.book.category }}</p>
+                    <p class="card-text text-muted">Purchased on: <span class="text-secondary">{{ record.purchased_at|date:"M d, Y H:i" }}</span></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center my-5">
+        <h2 class="text-muted">You have not bought any book yet.</h2>
+    </div>
+    {% endif %}
+</div>
+
+
+
+
+{% endblock %}
+
+

@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
+<div class="card h-100 col-12 col-md-8 mx-auto my-5">
+    <div class="card-body d-flex flex-column justify-content-center">
+        <div class="row">
+            <!-- Left side: Book Image -->
+            <div class="col-12 col-md-4 d-flex justify-content-center mb-3">
+                <img src="{{ book.image.url }}" style="width: auto; height: auto; margin-top: 20px;" alt="Book image">
+            </div>
+
+            <!-- Right side: Book Details -->
+            <div class="col-12 col-md-8">
+                <div class="card-body ">
+                    <p class="card-text"><b>Name:</b> {{ book.title }}</p>
+                    <p class="card-text"><b>Price:</b> ${{ book.price }}</p>
+                    <p class="card-text"><b>Quantity:</b> {{ book.quantity }}</p>
+                    <p class="card-text"><b>Category:</b> {{ book.category }}</p>
+                    <p class="card-text mb-4"><b>Description:</b> {{ book.details }}</p>
+
+                    {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'borrow_book' book.id %}">
+                        {% csrf_token %}
+                        {% if book.quantity == 0 %}
+                        <h2 class="text-center text-danger mt-3">Out of Stock</h2>
+                        {% else %}
+                        <button type="submit" class="btn btn-success mt-auto">Borrow Book</button>
+                        {% endif %}
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Close Button -->
+        <div class="d-flex justify-content-center mt-3">
+            <a href="{% url 'homepage' %}" class="btn btn-warning">Close</a>
+        </div>
+    </div>
+</div>
+
+
+{% if user.is_authenticated %}
+    <div class="card m-2">
+        <h5 class="p-3">Total Reviews: {{ reviews | length }}</h5>
+        {% for review in reviews %}
+        <div class="card-body border m-2">
+            <p><b>{{ review.user.username }}</b> {{ review.created_on }}</p>
+            <p>{{ review.body }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if has_borrowed %}
+    <div class="card m-2">
+        <div class="card-body">
+            <h1>Add Review</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ review_form | crispy }}
+                <button class="btn btn-warning">Submit</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="card m-2">
+        <p class="text-danger text-center p-3">You must borrow the book before leaving a review.</p>
+    </div>
+    {% endif %}
+{% else %}
+    <div class="card m-2">
+        <h5 class="p-3"><b>Total Reviews:</b> {{ reviews | length }}</h5>
+        {% for review in reviews %}
+        <div class="card-body border m-2">
+            <p><b>{{ review.user.username }}</b> {{ review.created_on }}</p>
+            <p>{{ review.body }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    <p class="text-center text-danger">Login to see or write reviews.</p>
+{% endif %}
+
+{% endblock %}

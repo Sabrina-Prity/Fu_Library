@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h3>You are in {{user}} Profile</h3>
+<h1>Change Your Password From Here</h1>
+<form style="width: 50%; margin: auto;" method="post">
+    {% csrf_token %}
+    <!-- {{form | crispy }} -->
+    {% for i in form %}
+     {{i.label_tag}}
+     {{i}}
+     {{i.errors}}
+     {% endfor %}
+
+    <button class="btn btn-primary mt-3" style="margin-left: 350px;">Submit</button>
+</form>
+{% endblock %}

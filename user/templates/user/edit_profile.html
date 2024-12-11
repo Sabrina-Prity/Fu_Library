@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h1>Change Your Details</h1>
+<form style="width: 50%; margin: auto;" method="post">
+    {% csrf_token %}
+    <!-- {{form | crispy }} -->
+
+    <!-- Django builtin error avoid korar jonno -->
+    {% for i in form %}
+     {{i.label_tag}}
+     {{i}}
+     {{i.errors}}
+     {% endfor %}
+
+    <button class="btn btn-primary mt-3" style="margin-left: 350px;">Submit</button>
+</form>
+
+<h1>Change Your Password</h1>
+<a class="btn btn-warning" href="{% url 'pass_change' %}">Change Your Password</a>
+{% endblock %}
